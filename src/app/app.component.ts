@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { SocketClientService } from './services/socket-client.service';
+import { ClientIdentifierService } from './services/client-identifier.service';
+import { StorageService } from './services/storage.service';
 
 @Component({
   selector: 'app-root',
@@ -7,7 +9,10 @@ import { SocketClientService } from './services/socket-client.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent implements OnInit {
-  constructor(private socketService: SocketClientService) {}
+  constructor(
+    public storageService: StorageService,
+    private socketService: SocketClientService
+  ) {}
 
   ngOnInit() {
     this.socketService.connect();

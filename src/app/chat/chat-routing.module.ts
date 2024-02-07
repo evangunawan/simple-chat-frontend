@@ -6,8 +6,13 @@ import { ChatPage } from './chat.page';
 const routes: Routes = [
   {
     path: '',
-    component: ChatPage
-  }
+    redirectTo: '/home',
+    pathMatch: 'full',
+  },
+  {
+    path: ':roomId',
+    component: ChatPage,
+  },
 ];
 
 @NgModule({

@@ -1,13 +1,37 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>chat</ion-title>
+  <ion-toolbar mode="ios">
+    <ion-title>{{ roomId }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="exitRoom()">Exit</ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">chat</ion-title>
-    </ion-toolbar>
-  </ion-header>
+  <div class="chat-container">
+    <ng-container *ngFor="let chat of chatMessages">
+      <p>{{ chat.type }}: {{ chat.content }}</p>
+    </ng-container>
+  </div>
 </ion-content>
+<ion-footer translucent>
+  <div class="message-sender">
+    <div class="input-container">
+      <ion-input
+        [(ngModel)]="messageInput"
+        placeholder="Type message..."
+        type="text"
+        mode="ios"
+        (keyup.enter)="sendMessage()"
+      ></ion-input>
+    </div>
+    <ion-button
+      class="btn-send"
+      mode="ios"
+      fill="clear"
+      (click)="sendMessage()"
+    >
+      <ion-icon name="send"></ion-icon>
+    </ion-button>
+  </div>
+</ion-footer>
