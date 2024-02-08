@@ -48,7 +48,10 @@ export class HomePage implements OnInit {
 
   private initFormGroup() {
     this.formGroup = new FormGroup({
-      username: new FormControl('', [Validators.required]),
+      username: new FormControl('', [
+        Validators.required,
+        Validators.minLength(8),
+      ]),
       roomId: new FormControl('', [Validators.required]),
     });
   }

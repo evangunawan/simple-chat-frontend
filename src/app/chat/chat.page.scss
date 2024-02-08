@@ -12,6 +12,15 @@
   }
 }
 
+.system-message-container {
+  display: flex;
+  justify-content: center;
+
+  p {
+    color: var(--ion-color-medium);
+  }
+}
+
 .chat-bubble-container {
   display: flex;
 

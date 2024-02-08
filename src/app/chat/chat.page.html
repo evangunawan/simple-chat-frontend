@@ -7,36 +7,43 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<ion-content #ionContent [fullscreen]="true">
   <div class="chat-container ion-padding">
     <ng-container *ngFor="let chat of chatMessages">
-      <div
-        class="chat-bubble-container"
-        [ngClass]="chat.type === 'incoming' ? 'incoming' : 'outgoing'"
-      >
-        <ng-container *ngIf="chat.type === 'incoming'; else outgoing">
-          <div class="chat-bubble ion-margin-bottom">
-            <div class="chat-sender">
-              <label>{{ chat.clientId }}</label>
-              <span class="ion-margin-start"
+      <ng-container *ngIf="!isSystemMessage(chat); else systemMessage">
+        <div
+          class="chat-bubble-container"
+          [ngClass]="$any(chat).type === 'incoming' ? 'incoming' : 'outgoing'"
+        >
+          <ng-container *ngIf="$any(chat).type === 'incoming'; else outgoing">
+            <div class="chat-bubble ion-margin-bottom">
+              <div class="chat-sender">
+                <label>{{ $any(chat).clientId }}</label>
+                <span class="ion-margin-start"
                 >{{ parseTime(chat.timestamp) }}</span
-              >
+                >
+              </div>
+              <p class="chat-content">{{ chat.content }}</p>
             </div>
-            <p class="chat-content">{{ chat.content }}</p>
-          </div>
-        </ng-container>
-        <ng-template #outgoing>
-          <div class="chat-bubble ion-margin-bottom">
-            <div class="chat-sender">
-              <label>{{ chat.clientId }}</label>
-              <span class="ion-margin-start"
+          </ng-container>
+          <ng-template #outgoing>
+            <div class="chat-bubble ion-margin-bottom">
+              <div class="chat-sender">
+                <label>{{ $any(chat).clientId }}</label>
+                <span class="ion-margin-start"
                 >{{ parseTime(chat.timestamp) }}</span
-              >
+                >
+              </div>
+              <p class="chat-content">{{ chat.content }}</p>
             </div>
-            <p class="chat-content">{{ chat.content }}</p>
-          </div>
-        </ng-template>
-      </div>
+          </ng-template>
+        </div>
+      </ng-container>
+      <ng-template #systemMessage>
+        <div class="system-message-container">
+          <p>{{ chat.content }}</p>
+        </div>
+      </ng-template>
     </ng-container>
   </div>
 </ion-content>
