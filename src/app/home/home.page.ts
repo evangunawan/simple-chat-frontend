@@ -52,7 +52,10 @@ export class HomePage implements OnInit {
         Validators.required,
         Validators.minLength(8),
       ]),
-      roomId: new FormControl('', [Validators.required]),
+      roomId: new FormControl('', [
+        Validators.required,
+        Validators.minLength(5),
+      ]),
     });
   }
 
