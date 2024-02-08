@@ -46,11 +46,12 @@
 
 
   .chat-bubble {
-    border-radius: 1em;
-    padding: 0.5em;
+    border-radius: 0.75em;
+    padding: 0.75em;
 
     .chat-sender {
       font-size: 0.8rem;
+      margin-bottom: 0.5em;
     }
 
     .chat-content {

@@ -88,7 +88,9 @@ export class ChatPage implements OnInit, OnDestroy {
         incomingMsg.content = parsed['content'];
         incomingMsg.type = 'incoming';
         incomingMsg.clientId = parsed.clientId;
-        incomingMsg.timestamp = parsed.timestamp;
+
+        // time on unix seconds, calculate to milliseconds unix.
+        incomingMsg.timestamp = parsed.timestamp * 1000;
 
         this.chatMessages.push(incomingMsg);
         this.ionContent.scrollToBottom(200);
