@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { ClientIdentifierService } from '../services/client-identifier.service';
+import { SocketClientService } from '../services/socket-client.service';
+import { Subject, takeUntil } from 'rxjs';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-home',
@@ -10,14 +13,31 @@ import { ClientIdentifierService } from '../services/client-identifier.service';
 })
 export class HomePage implements OnInit {
   public formGroup: FormGroup;
+  public isSocketConnected = false;
+
+  private unsubscribe$ = new Subject<void>();
 
   constructor(
     private router: Router,
-    private clientIdService: ClientIdentifierService
+    private clientIdService: ClientIdentifierService,
+    private socketService: SocketClientService,
+    private toast: ToastController
   ) {}
 
   public async joinRoom() {
     if (this.formGroup.invalid) return;
+
+    if (this.isSocketConnected === false) {
+      const toast = await this.toast.create({
+        message: 'Socket not connected',
+        duration: 3000,
+        position: 'bottom',
+      });
+      await toast.present();
+
+      return;
+    }
+
     const formValue = this.formGroup.value;
 
     await this.clientIdService.setClientId(formValue.username);
@@ -40,5 +60,10 @@ export class HomePage implements OnInit {
         this.formGroup.controls['username'].setValue(res);
       }
     });
+    this.socketService.socketConnected$
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((status) => {
+        this.isSocketConnected = status;
+      });
   }
 }

@@ -46,7 +46,16 @@
             Join Room
           </ion-button>
         </div>
+
       </ion-card-content>
     </ion-card>
+    <div class="socket-status">
+      <ng-container *ngIf="isSocketConnected === true; else socketDisconnected">
+        <span style="color: var(--ion-color-success)">socket connected</span>
+      </ng-container>
+      <ng-template #socketDisconnected>
+        <span style="color: var(--ion-color-danger)">socket disconnected</span>
+      </ng-template>
+    </div>
   </div>
 </ion-content>
