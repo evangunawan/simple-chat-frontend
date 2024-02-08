@@ -8,9 +8,35 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <div class="chat-container">
+  <div class="chat-container ion-padding">
     <ng-container *ngFor="let chat of chatMessages">
-      <p>{{ chat.type }}: {{ chat.content }}</p>
+      <div
+        class="chat-bubble-container"
+        [ngClass]="chat.type === 'incoming' ? 'incoming' : 'outgoing'"
+      >
+        <ng-container *ngIf="chat.type === 'incoming'; else outgoing">
+          <div class="chat-bubble ion-margin-bottom">
+            <div class="chat-sender">
+              <label>{{ chat.clientId }}</label>
+              <span class="ion-margin-start"
+                >{{ parseTime(chat.timestamp) }}</span
+              >
+            </div>
+            <p class="chat-content">{{ chat.content }}</p>
+          </div>
+        </ng-container>
+        <ng-template #outgoing>
+          <div class="chat-bubble ion-margin-bottom">
+            <div class="chat-sender">
+              <label>{{ chat.clientId }}</label>
+              <span class="ion-margin-start"
+                >{{ parseTime(chat.timestamp) }}</span
+              >
+            </div>
+            <p class="chat-content">{{ chat.content }}</p>
+          </div>
+        </ng-template>
+      </div>
     </ng-container>
   </div>
 </ion-content>

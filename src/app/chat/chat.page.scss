@@ -11,3 +11,41 @@
 
   }
 }
+
+.chat-bubble-container {
+  display: flex;
+
+  &.incoming {
+    flex-flow: row;
+
+    .chat-bubble {
+      background-color: var(--ion-color-light);
+    }
+  }
+
+  &.outgoing {
+    flex-flow: row-reverse;
+
+    .chat-bubble {
+      background-color: var(--ion-color-primary-tint);
+
+      .chat-content, .chat-sender {
+        color: white;
+      }
+    }
+  }
+
+
+  .chat-bubble {
+    border-radius: 1em;
+    padding: 0.5em;
+
+    .chat-sender {
+      font-size: 0.8rem;
+    }
+
+    .chat-content {
+      margin: 0;
+    }
+  }
+}

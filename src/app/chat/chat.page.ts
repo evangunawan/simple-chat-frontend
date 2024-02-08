@@ -5,6 +5,7 @@ import { SocketClientService } from '../services/socket-client.service';
 import { ChatMessageApiService } from '../services/api/chat-message.api.service';
 import { ChatMessage } from '../models/chat-message';
 import { ClientIdentifierService } from '../services/client-identifier.service';
+import * as moment from 'moment';
 
 @Component({
   selector: 'app-chat',
@@ -29,6 +30,10 @@ export class ChatPage implements OnInit, OnDestroy {
     private router: Router
   ) {}
 
+  public parseTime(timestamp: number): string {
+    return moment(timestamp).format('HH:mm');
+  }
+
   public sendMessage() {
     if (!this.messageInput) {
       return;
@@ -47,6 +52,7 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   public exitRoom() {
+    this.socketService.leaveRoom();
     this.router.navigate(['/home'], { replaceUrl: true });
   }
 

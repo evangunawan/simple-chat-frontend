@@ -34,6 +34,11 @@ export class SocketClientService {
     this._currentRoom$.next(roomId);
   }
 
+  public leaveRoom() {
+    this._client.emit('leaveroom', this._currentRoom$.value);
+    this._currentRoom$.next(null);
+  }
+
   public connect() {
     if (this._client) return;
     this._client = io(`${environment.backendUrl}`, { reconnectionDelay: 5000 });
