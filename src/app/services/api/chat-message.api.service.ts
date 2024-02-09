@@ -9,12 +9,11 @@ import { ChatMessage } from '../../models/chat-message';
 export class ChatMessageApiService {
   constructor(private httpClient: HttpClient) {}
 
-  public sendMessage(roomId: string, message: ChatMessage) {
+  public sendMessage(content: string, token: string) {
     return this.httpClient
       .post(`${environment.backendUrl}/chat-messages`, {
-        content: message.content,
-        roomId: roomId,
-        clientId: message.clientId,
+        content: content,
+        token,
       })
       .pipe();
   }

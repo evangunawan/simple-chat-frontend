@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../../environments/environment';
-import { Observable } from 'rxjs';
+import { map, Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,5 +13,20 @@ export class ChatRoomApiService {
     return this.httpClient.get(
       `${environment.backendUrl}/chat-rooms/${roomId}/clients`
     );
+  }
+
+  public generateRoomChatToken(
+    roomId: string,
+    clientId: string
+  ): Observable<{ token: string }> {
+    return this.httpClient
+      .post(`${environment.backendUrl}/chat-rooms/${roomId}/chat-token`, {
+        clientId,
+      })
+      .pipe(
+        map((data: any) => {
+          return data;
+        })
+      );
   }
 }

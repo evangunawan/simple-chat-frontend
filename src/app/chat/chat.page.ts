@@ -6,13 +6,13 @@ import {
   ViewChild,
 } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
-import { Subject, takeUntil } from 'rxjs';
+import { from, Subject, switchMap, takeUntil, tap } from 'rxjs';
 import { SocketClientService } from '../services/socket-client.service';
 import { ChatMessageApiService } from '../services/api/chat-message.api.service';
 import { ChatMessage } from '../models/chat-message';
 import { ClientIdentifierService } from '../services/client-identifier.service';
 import * as moment from 'moment';
-import { IonContent } from '@ionic/angular';
+import { IonContent, ToastController } from '@ionic/angular';
 import { ChatRoomApiService } from '../services/api/chat-room.api.service';
 import { SystemMessage } from '../models/system-message';
 
@@ -26,6 +26,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
   public roomId: string;
   public messageInput: string;
+  private sessionToken: string;
 
   public chatMessages: (ChatMessage | SystemMessage)[] = [];
 
@@ -39,7 +40,8 @@ export class ChatPage implements OnInit, OnDestroy {
     private chatMessageService: ChatMessageApiService,
     private clientIdentifierService: ClientIdentifierService,
     private chatRoomApiService: ChatRoomApiService,
-    private router: Router
+    private router: Router,
+    private toastController: ToastController
   ) {}
 
   public parseTime(timestamp: number): string {
@@ -62,7 +64,7 @@ export class ChatPage implements OnInit, OnDestroy {
 
     this.chatMessages.push(newMessage);
     this.chatMessageService
-      .sendMessage(this.roomId, newMessage)
+      .sendMessage(this.messageInput, this.sessionToken)
       .pipe(takeUntil(this.unsubscribe$))
       .subscribe();
     this.messageInput = '';
@@ -75,7 +77,16 @@ export class ChatPage implements OnInit, OnDestroy {
   }
 
   private joinRoom(room: string) {
-    this.socketService.joinRoom(room, this.clientId);
+    this.chatRoomApiService
+      .generateRoomChatToken(room, this.clientId)
+      .pipe(takeUntil(this.unsubscribe$))
+      .subscribe((token) => {
+        console.log(token);
+        this.sessionToken = token.token;
+        this.socketService.joinRoom(token.token);
+        this.showConnectedToast();
+      });
+
     this.socketService
       .consume('chat')
       .pipe(takeUntil(this.unsubscribe$))
@@ -133,6 +144,15 @@ export class ChatPage implements OnInit, OnDestroy {
       .subscribe((res) => {
         console.log(res);
       });
+  }
+
+  private async showConnectedToast() {
+    const toast = await this.toastController.create({
+      message: 'Connected to the room.',
+      position: 'top',
+      duration: 2000,
+    });
+    await toast.present();
   }
 
   ngOnInit() {

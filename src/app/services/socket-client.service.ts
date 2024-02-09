@@ -17,10 +17,9 @@ export class SocketClientService {
   >();
 
   // this application designed to have 1 room at a time.
-  private _currentRoom$: BehaviorSubject<{ roomId: string; clientId: string }> =
+  private _currentSession$: BehaviorSubject<{ token: string }> =
     new BehaviorSubject<{
-      roomId: string;
-      clientId: string;
+      token: string;
     }>(null);
 
   constructor() {}
@@ -29,16 +28,19 @@ export class SocketClientService {
     return this._client;
   }
 
-  public joinRoom(roomId: string, clientId: string) {
-    if (this._currentRoom$.value) {
-      this._client.emit('leaveroom', JSON.stringify(this._currentRoom$.value));
+  public joinRoom(token: string) {
+    if (this._currentSession$.value) {
+      this._client.emit(
+        'leaveroom',
+        JSON.stringify(this._currentSession$.value)
+      );
     }
-    this._currentRoom$.next({ roomId, clientId });
+    this._currentSession$.next({ token });
   }
 
   public leaveRoom() {
-    this._client.emit('leaveroom', JSON.stringify(this._currentRoom$.value));
-    this._currentRoom$.next(null);
+    this._client.emit('leaveroom', JSON.stringify(this._currentSession$.value));
+    this._currentSession$.next(null);
   }
 
   public connect() {
@@ -46,7 +48,8 @@ export class SocketClientService {
     this._client = io(`${environment.backendUrl}`, {
       reconnectionDelay: 5000,
     });
-    this._currentRoom$.subscribe((room) => {
+
+    this._currentSession$.subscribe((room) => {
       if (room) {
         this._client.emit('joinroom', JSON.stringify(room));
       }
